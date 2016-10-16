@@ -1,17 +1,17 @@
 package com.github.mkorman9.neural.data;
 
 public class HiddenLayerModel {
-    private Vector bias;
     private Matrix weights;
+    private Vector bias;
 
     public HiddenLayerModel(int dimension) {
-        this.bias = Vector.random(dimension);
         this.weights = Matrix.random(dimension, dimension);
+        this.bias = Vector.random(dimension);
     }
 
-    public HiddenLayerModel(Vector bias, Matrix weights) {
-        this.bias = bias;
+    public HiddenLayerModel(Matrix weights, Vector bias) {
         this.weights = weights;
+        this.bias = bias;
     }
 
     public Vector getBias() {

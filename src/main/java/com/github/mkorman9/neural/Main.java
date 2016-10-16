@@ -3,9 +3,9 @@ package com.github.mkorman9.neural;
 import com.github.mkorman9.neural.activation.SigmoidFunction;
 import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Vector;
+import com.github.mkorman9.neural.data.parser.CsvReader;
+import com.github.mkorman9.neural.data.parser.Reader;
 import com.github.mkorman9.neural.network.NeuralNetwork;
-import com.github.mkorman9.neural.parser.CsvReader;
-import com.github.mkorman9.neural.parser.Reader;
 
 import java.io.File;
 

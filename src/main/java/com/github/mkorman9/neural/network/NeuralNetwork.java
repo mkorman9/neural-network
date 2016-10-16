@@ -13,6 +13,16 @@ public class NeuralNetwork {
     private OutputLayerNeuronActivationComputer outputLayerNeuronActivationComputer;
     private PredictionSuccessChecker predictionSuccessChecker;
 
+    public NeuralNetwork(Model networkModel, Function activationFunction) {
+        this.networkModel = networkModel;
+        this.dimension = networkModel.getHiddenLayerModel().getBias().size();
+        this.learningCyclesCount = 0;
+
+        this.hiddenLayerNeuronActivationComputer = new HiddenLayerNeuronActivationComputer(dimension, activationFunction);
+        this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(dimension, activationFunction);
+        this.predictionSuccessChecker = new PredictionSuccessChecker();
+    }
+
     public NeuralNetwork(int dimension, Function activationFunction, int learningCyclesCount) {
         this.dimension = dimension;
         this.learningCyclesCount = learningCyclesCount;
@@ -51,5 +61,9 @@ public class NeuralNetwork {
     public boolean predict(Vector input) {
         Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(input, networkModel.getHiddenLayerModel());
         return predictionSuccessChecker.check(outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, networkModel.getOutputLayerModel()));
+    }
+
+    public Model getModel() {
+        return networkModel;
     }
 }
