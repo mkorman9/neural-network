@@ -11,8 +11,12 @@ import com.github.mkorman9.neural.network.writer.Writer;
 import com.google.common.collect.Lists;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
+    private static final int MAX_THREADS = 4;
+
     public static void main(String[] args) {
         File inputFile = new File(args[1]);
         File outputFile = new File(args[2]);
@@ -29,20 +33,40 @@ public class Main {
         Matrix input = new CsvReader().readFromFile(inputFile);
         Matrix output = new MultiClassOutputsInterpreter().interpret(new CsvReader().readFromFile(outputFile),
                 Lists.newArrayList(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0));
+        ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 
         for (int i = 0; i < output.size(); i++) {
             Vector labels = output.row(0);
-            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 100);
-            neuralNetwork.learn(input, labels);
-
-            Writer writer = new DefaultWriter();
-            writer.write(neuralNetwork.getModel(), new File(String.format("target/model_%d.txt", i)));
-
-            System.out.printf("Wrote model for '%d' to target/model_%d.txt\n", i, i);
+            executor.execute(new TrainingTask(input, i, labels));
         }
+
+        executor.shutdown();
     }
 
     private static void predict(File inputFile, File outputFile) {
 
+    }
+
+    private static class TrainingTask implements Runnable {
+        private final Matrix input;
+        private final int n;
+        private final Vector labels;
+
+        public TrainingTask(Matrix input, int n, Vector labels) {
+            this.input = input;
+            this.n = n;
+            this.labels = labels;
+        }
+
+        @Override
+        public void run() {
+            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 1);
+            neuralNetwork.learn(input, labels);
+
+            Writer writer = new DefaultWriter();
+            writer.write(neuralNetwork.getModel(), new File(String.format("target/model_%d.txt", n)));
+
+            System.out.printf("Wrote model for '%d' to target/model_%d.txt\n", n, n);
+        }
     }
 }
