@@ -7,8 +7,7 @@ import com.google.common.base.Preconditions;
 public class NeuralNetwork {
     private int dimension;
     private int learningCyclesCount;
-    private OutputLayerModel outputLayerModel;
-    private HiddenLayerModel hiddenLayerModel;
+    private Model networkModel;
 
     private HiddenLayerNeuronActivationComputer hiddenLayerNeuronActivationComputer;
     private OutputLayerNeuronActivationComputer outputLayerNeuronActivationComputer;
@@ -18,8 +17,8 @@ public class NeuralNetwork {
         this.dimension = dimension;
         this.learningCyclesCount = learningCyclesCount;
 
-        this.outputLayerModel = new OutputLayerModel(dimension);
-        this.hiddenLayerModel = new HiddenLayerModel(dimension);
+        this.networkModel = new Model(new HiddenLayerModel(dimension),
+                                      new OutputLayerModel(dimension));
 
         this.hiddenLayerNeuronActivationComputer = new HiddenLayerNeuronActivationComputer(dimension, activationFunction);
         this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(dimension, activationFunction);
@@ -37,20 +36,20 @@ public class NeuralNetwork {
             for (int i = 0; i < inputsCount; i++) {
                 // find prediction
                 Vector inputRow = inputs.row(i);
-                Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(inputRow, hiddenLayerModel);
-                double outputLayerOutput = outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, outputLayerModel);
+                Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(inputRow, networkModel.getHiddenLayerModel());
+                double outputLayerOutput = outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, networkModel.getOutputLayerModel());
 
                 // perform learning
-                Learner learner = new Learner(hiddenLayerModel, outputLayerModel);
+                Learner learner = new Learner(networkModel.getHiddenLayerModel(), networkModel.getOutputLayerModel());
                 learner.perform(inputRow, hiddenLayerOutputs, outputLayerOutput, outputs.get(i));
-                this.hiddenLayerModel = learner.getHiddenLayerModel();
-                this.outputLayerModel = learner.getOutputLayerModel();
+                this.networkModel = new Model(learner.getHiddenLayerModel(),
+                                              learner.getOutputLayerModel());
             }
         }
     }
 
     public boolean predict(Vector input) {
-        Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(input, hiddenLayerModel);
-        return predictionSuccessChecker.check(outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, outputLayerModel));
+        Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(input, networkModel.getHiddenLayerModel());
+        return predictionSuccessChecker.check(outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, networkModel.getOutputLayerModel()));
     }
 }
