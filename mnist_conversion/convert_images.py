@@ -3,7 +3,7 @@ import sys
 import numpy
 import skimage.feature
 
-MAX_SAMPLES = 5000
+MAX_SAMPLES = 60000
 
 def parse(path):
     with open(path) as f:

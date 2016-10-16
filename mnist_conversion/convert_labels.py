@@ -1,7 +1,7 @@
 import struct
 import sys
 
-MAX_SAMPLES = 5000
+MAX_SAMPLES = 10000
 
 def parse(path):
     with open(path) as f:

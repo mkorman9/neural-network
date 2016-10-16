@@ -98,7 +98,7 @@ public class Main {
 
         @Override
         public void run() {
-            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 100);
+            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 1000);
             neuralNetwork.learn(input, labels);
 
             Writer writer = new DefaultWriter();
