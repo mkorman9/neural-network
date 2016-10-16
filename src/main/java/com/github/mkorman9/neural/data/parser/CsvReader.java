@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CsvReader implements Reader {
-    private static final String SEPARATOR = ",";
+    private static final String SEPARATOR = " ";
 
     @Override
     public Matrix readFromFile(File file) {
