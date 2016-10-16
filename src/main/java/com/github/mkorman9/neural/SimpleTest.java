@@ -4,7 +4,6 @@ import com.github.mkorman9.neural.activation.SigmoidFunction;
 import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
-import com.github.mkorman9.neural.data.interpreter.SingleClassOutputsInterpreter;
 import com.github.mkorman9.neural.data.parser.CsvReader;
 import com.github.mkorman9.neural.network.NeuralNetwork;
 import com.github.mkorman9.neural.network.reader.DefaultReader;
@@ -29,7 +28,7 @@ public class SimpleTest {
 
     private static void train(File inputFile, File outputFile) {
         Matrix input = new CsvReader().readFromFile(inputFile);
-        Vector output = new SingleClassOutputsInterpreter().interpret(new CsvReader().readFromFile(outputFile));
+        Vector output = new CsvReader().readFromFile(outputFile).column(0);
 
         NeuralNetwork neuralNetwork = new NeuralNetwork(3, 2, new SigmoidFunction(), 1000);
         neuralNetwork.learn(input, output);
@@ -40,7 +39,7 @@ public class SimpleTest {
 
     private static void predict(File inputFile, File outputFile) {
         Matrix input = new CsvReader().readFromFile(inputFile);
-        Vector output = new SingleClassOutputsInterpreter().interpret(new CsvReader().readFromFile(outputFile));
+        Vector output = new CsvReader().readFromFile(outputFile).column(0);
 
         Reader reader = new DefaultReader();
         Model model = reader.read(new File("target/simple_model.txt"));
