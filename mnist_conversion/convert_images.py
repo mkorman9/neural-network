@@ -1,5 +1,7 @@
 import struct
 import sys
+import numpy
+import skimage.feature
 
 MAX_SAMPLES = 5000
 
@@ -15,11 +17,15 @@ def parse(path):
         columns = struct.unpack('>I', f.read(4))[0]
 
         for image in xrange(number_of_images):
-            for row in xrange(rows):
-                for column in xrange(columns):
-                    pixel = float(struct.unpack('>B', f.read(1))[0]) / 255.0
-                    sys.stdout.write('{0} '.format(pixel))
-            print('')
+            image_pixels = []
+            for column in xrange(columns):
+                row_pixels = []
+                for row in xrange(rows):
+                    pixel = struct.unpack('>B', f.read(1))[0]
+                    row_pixels.append(pixel)
+                image_pixels.append(row_pixels)
+            image_data = numpy.array(image_pixels, dtype=numpy.uint8)
+            print(' '.join([str(x) for x in skimage.feature.hog(image_data).tolist()]))
 
 
 if __name__ == '__main__':

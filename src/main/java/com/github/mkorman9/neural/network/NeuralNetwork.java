@@ -58,10 +58,16 @@ public class NeuralNetwork {
         }
     }
 
-    public boolean predict(Vector input) {
+    public double predict(Vector input) {
+        Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(input, networkModel.getHiddenLayerModel());
+        return outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, networkModel.getOutputLayerModel());
+    }
+
+    public boolean predictTrueFalse(Vector input) {
         Vector hiddenLayerOutputs = hiddenLayerNeuronActivationComputer.compute(input, networkModel.getHiddenLayerModel());
         return predictionSuccessChecker.check(outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs, networkModel.getOutputLayerModel()));
     }
+
 
     public Model getModel() {
         return networkModel;

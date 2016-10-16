@@ -2,15 +2,18 @@ package com.github.mkorman9.neural;
 
 import com.github.mkorman9.neural.activation.SigmoidFunction;
 import com.github.mkorman9.neural.data.Matrix;
+import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 import com.github.mkorman9.neural.data.interpreter.MultiClassOutputsInterpreter;
 import com.github.mkorman9.neural.data.parser.CsvReader;
 import com.github.mkorman9.neural.network.NeuralNetwork;
+import com.github.mkorman9.neural.network.reader.DefaultReader;
 import com.github.mkorman9.neural.network.writer.DefaultWriter;
 import com.github.mkorman9.neural.network.writer.Writer;
 import com.google.common.collect.Lists;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,7 +47,42 @@ public class Main {
     }
 
     private static void predict(File inputFile, File outputFile) {
+        Matrix input = new CsvReader().readFromFile(inputFile);
+        Vector labels = new CsvReader().readFromFile(outputFile).column(0);
+        List<NeuralNetwork> networks = Lists.newArrayList();
 
+        for (int i = 0; i < 10; i++) {
+            Model model = new DefaultReader().read(new File(String.format("target/model_%d.txt", i)));
+            NeuralNetwork neuralNetwork = new NeuralNetwork(model, new SigmoidFunction());
+            networks.add(neuralNetwork);
+        }
+
+        int successCount = 0;
+        for (int i = 0; i < input.size(); i++) {
+            Vector inputRow = input.row(i);
+            double expectedAnswer = labels.get(i);
+            List<Double> networksAnswers = Lists.newArrayList();
+
+            for (int j = 0; j < 10; j++) {
+                double prediction = networks.get(j).predict(inputRow);
+                networksAnswers.add(prediction);
+            }
+
+            double max = 0.0;
+            int maxIndex = -1;
+            for (int j = 0; j < networksAnswers.size(); j++) {
+                if (networksAnswers.get(j) >= max) {
+                    max = networksAnswers.get(j);
+                    maxIndex = j;
+                }
+            }
+
+            if (expectedAnswer == maxIndex) {
+                successCount += 1;
+            }
+        }
+
+        System.out.printf("Guessed %d/%d (%f%%)\n", successCount, input.size(), (double) successCount / (double) input.size() * 100.0);
     }
 
     private static class TrainingTask implements Runnable {
@@ -60,7 +98,7 @@ public class Main {
 
         @Override
         public void run() {
-            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 1);
+            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 100);
             neuralNetwork.learn(input, labels);
 
             Writer writer = new DefaultWriter();
