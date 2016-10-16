@@ -1,0 +1,1 @@
+Python scripts to convert from MNIST format to format recognized by network
