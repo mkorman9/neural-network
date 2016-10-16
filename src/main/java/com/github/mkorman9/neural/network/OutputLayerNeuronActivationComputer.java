@@ -5,11 +5,11 @@ import com.github.mkorman9.neural.data.OutputLayerModel;
 import com.github.mkorman9.neural.data.Vector;
 
 class OutputLayerNeuronActivationComputer {
-    private int dimension;
+    private int neurons;
     private Function activationFunction;
 
-    public OutputLayerNeuronActivationComputer(int dimension, Function activationFunction) {
-        this.dimension = dimension;
+    public OutputLayerNeuronActivationComputer(int neurons, Function activationFunction) {
+        this.neurons = neurons;
         this.activationFunction = activationFunction;
     }
 
@@ -20,7 +20,7 @@ class OutputLayerNeuronActivationComputer {
 
     private double computeWeightSum(Vector neuronsAnswers, Vector outputLayerWeights) {
         double sum = 0.0;
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < neurons; i++) {
             sum += neuronsAnswers.get(i) * outputLayerWeights.get(i);
         }
         return sum;

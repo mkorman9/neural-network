@@ -6,17 +6,19 @@ import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Vector;
 
 class HiddenLayerNeuronActivationComputer {
+    private int neurons;
     private int dimension;
     private Function activationFunction;
 
-    public HiddenLayerNeuronActivationComputer(int dimension, Function activationFunction) {
+    public HiddenLayerNeuronActivationComputer(int neurons, int dimension, Function activationFunction) {
+        this.neurons = neurons;
         this.dimension = dimension;
         this.activationFunction = activationFunction;
     }
 
     public Vector compute(Vector inputRow, HiddenLayerModel hiddenLayerModel) {
-        Vector neuronOutputs = Vector.zero(dimension);
-        for (int i = 0; i < dimension; i++) {
+        Vector neuronOutputs = Vector.zero(neurons);
+        for (int i = 0; i < neurons; i++) {
             double sum = computeWeightSum(inputRow, hiddenLayerModel.getWeights(), i);
             double activation = activationFunction.compute(sum + hiddenLayerModel.getBias().get(i));
             neuronOutputs.set(i, activation);

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Main {
+public class MnistTest {
     private static final int MAX_THREADS = 4;
 
     public static void main(String[] args) {
@@ -98,7 +98,7 @@ public class Main {
 
         @Override
         public void run() {
-            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), new SigmoidFunction(), 1000);
+            NeuralNetwork neuralNetwork = new NeuralNetwork(input.row(0).size(), input.row(0).size(), new SigmoidFunction(), 1000);
             neuralNetwork.learn(input, labels);
 
             Writer writer = new DefaultWriter();

@@ -4,9 +4,9 @@ public class HiddenLayerModel {
     private Matrix weights;
     private Vector bias;
 
-    public HiddenLayerModel(int dimension) {
-        this.weights = Matrix.random(dimension, dimension);
-        this.bias = Vector.random(dimension);
+    public HiddenLayerModel(int neurons, int dimension) {
+        this.weights = Matrix.random(dimension, neurons);
+        this.bias = Vector.random(neurons);
     }
 
     public HiddenLayerModel(Matrix weights, Vector bias) {

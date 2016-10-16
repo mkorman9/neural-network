@@ -18,14 +18,14 @@ class HiddenLayerWeightsComputer {
 
     public Matrix compute(Vector inputRow, Vector hiddenLayerOutputs, double dv) {
         Vector dwi = Vector.zero(hiddenLayerOutputs.size());
-        Matrix dw = Matrix.zero(hiddenLayerOutputs.size(), hiddenLayerOutputs.size());
-        Matrix newHiddenLayerWeights = Matrix.zero(hiddenLayerOutputs.size(), hiddenLayerOutputs.size());
+        Matrix dw = Matrix.zero(inputRow.size(), hiddenLayerOutputs.size());
+        Matrix newHiddenLayerWeights = Matrix.zero(inputRow.size(), hiddenLayerOutputs.size());
 
         for (int i = 0; i < hiddenLayerOutputs.size(); i++) {
             double value = hiddenLayerOutputs.get(i) * (1 - hiddenLayerOutputs.get(i)) * outputLayerModel.getWeights().get(i) * dv;
             dwi.set(i, value);
 
-            for (int j = 0; j < hiddenLayerOutputs.size(); j++) {
+            for (int j = 0; j < inputRow.size(); j++) {
                 dw.setValue(j, i, learningRate * dwi.get(i) * inputRow.get(j));
                 newHiddenLayerWeights.setValue(j, i, hiddenLayerModel.getWeights().value(j, i) + dw.value(j, i));
             }

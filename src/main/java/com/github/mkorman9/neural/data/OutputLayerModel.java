@@ -4,8 +4,8 @@ public class OutputLayerModel {
     private Vector weights;
     private double bias;
 
-    public OutputLayerModel(int dimension) {
-        this.weights = Vector.random(dimension);
+    public OutputLayerModel(int neurons) {
+        this.weights = Vector.random(neurons);
         this.bias = RandomValue.generate();
     }
 

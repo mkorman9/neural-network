@@ -19,6 +19,7 @@ public class DefaultWriter implements Writer {
     public void write(Model model, File file) {
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file))) {
             writeDimension(model, writer);
+            writeNeurons(model, writer);
             writeHiddenLayerWeights(model, writer);
             writeHiddenLayerBias(model, writer);
             writeOutputLayerWeights(model, writer);
@@ -29,8 +30,12 @@ public class DefaultWriter implements Writer {
         }
     }
 
-    private void writeDimension(Model model, OutputStreamWriter writer) throws IOException {
+    private void writeNeurons(Model model, OutputStreamWriter writer) throws IOException {
         writeLine(writer, model.getHiddenLayerModel().getBias().size());
+    }
+
+    private void writeDimension(Model model, OutputStreamWriter writer) throws IOException {
+        writeLine(writer, model.getHiddenLayerModel().getWeights().size());
     }
 
     private void writeOutputLayerBias(Model model, OutputStreamWriter writer) throws IOException {

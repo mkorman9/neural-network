@@ -5,6 +5,7 @@ import com.github.mkorman9.neural.data.*;
 import com.google.common.base.Preconditions;
 
 public class NeuralNetwork {
+    private int neurons;
     private int dimension;
     private int learningCyclesCount;
     private Model networkModel;
@@ -15,23 +16,25 @@ public class NeuralNetwork {
 
     public NeuralNetwork(Model networkModel, Function activationFunction) {
         this.networkModel = networkModel;
-        this.dimension = networkModel.getHiddenLayerModel().getBias().size();
+        this.neurons = networkModel.getHiddenLayerModel().getBias().size();
+        this.dimension = networkModel.getHiddenLayerModel().getWeights().size();
         this.learningCyclesCount = 0;
 
-        this.hiddenLayerNeuronActivationComputer = new HiddenLayerNeuronActivationComputer(dimension, activationFunction);
-        this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(dimension, activationFunction);
+        this.hiddenLayerNeuronActivationComputer = new HiddenLayerNeuronActivationComputer(neurons, dimension, activationFunction);
+        this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(neurons, activationFunction);
         this.predictionSuccessChecker = new PredictionSuccessChecker();
     }
 
-    public NeuralNetwork(int dimension, Function activationFunction, int learningCyclesCount) {
+    public NeuralNetwork(int neurons, int dimension, Function activationFunction, int learningCyclesCount) {
         this.dimension = dimension;
+        this.neurons = neurons;
         this.learningCyclesCount = learningCyclesCount;
 
-        this.networkModel = new Model(new HiddenLayerModel(dimension),
-                                      new OutputLayerModel(dimension));
+        this.networkModel = new Model(new HiddenLayerModel(neurons, dimension),
+                                      new OutputLayerModel(neurons));
 
-        this.hiddenLayerNeuronActivationComputer = new HiddenLayerNeuronActivationComputer(dimension, activationFunction);
-        this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(dimension, activationFunction);
+        this.hiddenLayerNeuronActivationComputer = new HiddenLayerNeuronActivationComputer(neurons, dimension, activationFunction);
+        this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(neurons, activationFunction);
         this.predictionSuccessChecker = new PredictionSuccessChecker();
     }
 

@@ -2,7 +2,6 @@ package com.github.mkorman9.neural.network.reader;
 
 import com.github.mkorman9.neural.data.*;
 import com.github.mkorman9.neural.exception.ReadWriteException;
-import com.github.mkorman9.neural.network.NeuralNetwork;
 import com.google.common.collect.Lists;
 
 import java.io.*;
@@ -21,7 +20,8 @@ public class DefaultReader implements Reader {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             int dimension = readInt(reader);
-            hiddenWeights = readMatrix(reader, dimension);
+            int neurons = readInt(reader);
+            hiddenWeights = readMatrix(reader, neurons, dimension);
             hiddenBias = readVector(reader, dimension);
             outputWeights = readVector(reader, dimension);
             outputBias = readDouble(reader);
@@ -47,10 +47,10 @@ public class DefaultReader implements Reader {
                 .collect(Collectors.toList()));
     }
 
-    private Matrix readMatrix(BufferedReader reader, int dimension) throws IOException {
+    private Matrix readMatrix(BufferedReader reader, int neurons, int dimension) throws IOException {
         List<Vector> rows = Lists.newArrayList();
         for (int i = 0; i < dimension; i++) {
-            rows.add(readVector(reader, dimension));
+            rows.add(readVector(reader, neurons));
         }
         return Matrix.create(rows);
     }
