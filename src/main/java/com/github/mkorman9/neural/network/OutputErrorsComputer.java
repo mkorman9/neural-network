@@ -1,6 +1,5 @@
 package com.github.mkorman9.neural.network;
 
-import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 
@@ -11,18 +10,16 @@ public class OutputErrorsComputer {
         this.networkModel = networkModel;
     }
 
-    public Matrix compute(Vector hiddenLayerOutputs, Vector outputLayerOutputs, Vector expectedOutputs) {
-        Matrix result = Matrix.zero(networkModel.getHiddenLayerNeuronsCount(), networkModel.getOutputLayerNeuronsCount());
+    public Vector compute(Vector outputLayerOutputs, Vector expectedOutputs) {
+        Vector result = Vector.zero(networkModel.getOutputLayerNeuronsCount());
         for (int i = 0; i < networkModel.getOutputLayerNeuronsCount(); i++) {
-            for (int j = 0; j < networkModel.getHiddenLayerNeuronsCount(); j++) {
-                double dv = computeValue(hiddenLayerOutputs.get(j), outputLayerOutputs.get(i), expectedOutputs.get(i));
-                result.setValue(j, i, dv);
-            }
+            double dv = computeValue(outputLayerOutputs.get(i), expectedOutputs.get(i));
+            result.set(i, dv);
         }
         return result;
     }
 
-    private double computeValue(double hiddenLayerOutput, double outputLayerOutput, double expected) {
-        return (expected - outputLayerOutput) * outputLayerOutput * (1 - outputLayerOutput) * hiddenLayerOutput;
+    private double computeValue(double outputLayerOutput, double expected) {
+        return (outputLayerOutput - expected) * outputLayerOutput * (1 - outputLayerOutput);
     }
 }

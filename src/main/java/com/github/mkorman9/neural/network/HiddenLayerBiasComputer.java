@@ -1,6 +1,5 @@
 package com.github.mkorman9.neural.network;
 
-import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 
@@ -13,7 +12,7 @@ class HiddenLayerBiasComputer {
         this.learningRate = learningRate;
     }
 
-    public Vector compute(Vector hiddenLayerOutputs, Matrix dv) {
+    public Vector compute(Vector hiddenLayerOutputs, Vector dv) {
         return networkModel.getHiddenLayerModel().getBias();
     }
 }

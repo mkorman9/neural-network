@@ -24,8 +24,8 @@ class Learner {
     }
 
     public void perform(Vector inputRow, Vector hiddenLayerOutputs, Vector outputLayerOutput, Vector expectedOutput) {
-        Matrix dv = outputErrorsComputer.compute(hiddenLayerOutputs, outputLayerOutput, expectedOutput);
-        networkModel.getOutputLayerModel().setWeights(outputLayerWeightsComputer.compute(dv));
+        Vector dv = outputErrorsComputer.compute(outputLayerOutput, expectedOutput);
+        networkModel.getOutputLayerModel().setWeights(outputLayerWeightsComputer.compute(hiddenLayerOutputs, dv));
         networkModel.getOutputLayerModel().setBias(outputLayerBiasComputer.compute(dv));
         networkModel.getHiddenLayerModel().setWeights(hiddenLayerWeightsComputer.compute(inputRow, hiddenLayerOutputs,
                 outputLayerOutput, expectedOutput));

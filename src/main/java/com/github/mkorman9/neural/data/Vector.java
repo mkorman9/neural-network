@@ -27,6 +27,18 @@ public class Vector {
         return values;
     }
 
+    public Matrix multiply(Vector other) {
+        List<Vector> rows = Lists.newArrayList();
+        for (int i = 0; i < values.size(); i++) {
+            List<Double> columns = Lists.newArrayList();
+            for (int j = 0; j < other.values.size(); j++) {
+                columns.add(values.get(i) * other.values.get(j));
+            }
+            rows.add(Vector.create(columns));
+        }
+        return Matrix.create(rows);
+    }
+
     public static Vector create(Double... values) {
         return new Vector(Lists.newArrayList(values));
     }
