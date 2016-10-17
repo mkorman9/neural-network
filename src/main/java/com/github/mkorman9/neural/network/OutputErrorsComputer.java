@@ -23,6 +23,6 @@ public class OutputErrorsComputer {
     }
 
     private double computeValue(double outputLayerOutput, double expected) {
-        return (outputLayerOutput - expected) * activationFunction.computeDerivative(outputLayerOutput);
+        return (expected - outputLayerOutput) * activationFunction.computeDerivative(outputLayerOutput);
     }
 }

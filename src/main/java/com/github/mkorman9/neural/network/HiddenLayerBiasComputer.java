@@ -15,7 +15,7 @@ class HiddenLayerBiasComputer {
     public Vector compute(Vector dw) {
         Vector newBias = Vector.zero(networkModel.getHiddenLayerNeuronsCount());
         for (int i = 0; i < networkModel.getHiddenLayerNeuronsCount(); i++) {
-            newBias.set(i, networkModel.getHiddenLayerModel().getBias().get(i) - (dw.get(i) * learningRate));
+            newBias.set(i, networkModel.getHiddenLayerModel().getBias().get(i) + (dw.get(i) * learningRate));
         }
         return newBias;
     }
