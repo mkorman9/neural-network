@@ -18,7 +18,8 @@ class OutputLayerWeightsComputer {
         Matrix newWeights = Matrix.zero(networkModel.getHiddenLayerNeuronsCount(), networkModel.getOutputLayerNeuronsCount());
         for (int i = 0; i < networkModel.getOutputLayerNeuronsCount(); i++) {
             for (int j = 0; j < networkModel.getHiddenLayerNeuronsCount(); j++) {
-                newWeights.setValue(j, i, networkModel.getOutputLayerModel().getWeights().value(j, i) - learningRate * delta.value(j, i));
+                newWeights.setValue(j, i, networkModel.getOutputLayerModel().getWeights().value(j, i) - (
+                        learningRate * delta.value(j, i)));
             }
         }
         return newWeights;

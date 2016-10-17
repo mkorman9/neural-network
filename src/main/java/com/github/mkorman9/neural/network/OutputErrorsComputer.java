@@ -1,13 +1,16 @@
 package com.github.mkorman9.neural.network;
 
+import com.github.mkorman9.neural.activation.Function;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 
 public class OutputErrorsComputer {
     private Model networkModel;
+    private Function activationFunction;
 
-    public OutputErrorsComputer(Model networkModel) {
+    public OutputErrorsComputer(Model networkModel, Function activationFunction) {
         this.networkModel = networkModel;
+        this.activationFunction = activationFunction;
     }
 
     public Vector compute(Vector outputLayerOutputs, Vector expectedOutputs) {
@@ -20,6 +23,6 @@ public class OutputErrorsComputer {
     }
 
     private double computeValue(double outputLayerOutput, double expected) {
-        return (outputLayerOutput - expected) * outputLayerOutput * (1 - outputLayerOutput);
+        return (outputLayerOutput - expected) * activationFunction.computeDerivative(outputLayerOutput);
     }
 }

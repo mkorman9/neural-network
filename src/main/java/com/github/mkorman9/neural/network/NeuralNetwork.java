@@ -49,7 +49,7 @@ public class NeuralNetwork {
                 Vector outputLayerOutputs = outputLayerNeuronActivationComputer.compute(hiddenLayerOutputs);
 
                 // perform learning
-                Learner learner = new Learner(networkModel);
+                Learner learner = new Learner(networkModel, activationFunction);
                 learner.perform(inputRow, hiddenLayerOutputs, outputLayerOutputs, outputs.row(i));
             }
         }
