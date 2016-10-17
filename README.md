@@ -1,1 +1,1 @@
-Simple neural network with one hidden and one output layer written in pure Java 8.
+Simple neural network with single hidden layer written in pure Java 8. It's able to classify given item to one of multiple classes.
