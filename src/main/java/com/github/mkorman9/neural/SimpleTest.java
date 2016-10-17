@@ -1,5 +1,6 @@
 package com.github.mkorman9.neural;
 
+import com.github.mkorman9.neural.activation.SigmoidFunction;
 import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
@@ -29,11 +30,12 @@ public class SimpleTest {
         Matrix input = new CsvReader().readFromFile(inputFile);
         Matrix output = new CsvReader().readFromFile(outputFile);
 
-        NeuralNetwork neuralNetwork = NeuralNetwork.build()
+        NeuralNetwork neuralNetwork = NeuralNetwork.buildNew()
                                                 .outputLayerNeurons(1)
                                                 .hiddenLayerNeurons(3)
-                                                .dimension(2)
+                                                .inputLayerNeurons(2)
                                                 .learningCyclesCount(1000)
+                                                .activationFunction(new SigmoidFunction())
                                                 .done();
         neuralNetwork.learn(input, output);
 
@@ -48,7 +50,10 @@ public class SimpleTest {
         Reader reader = new DefaultReader();
         Model model = reader.read(new File("target/simple_model.txt"));
 
-        NeuralNetwork neuralNetwork = NeuralNetwork.buildFromModel(model);
+        NeuralNetwork neuralNetwork = NeuralNetwork.buildFromModel()
+                                                    .model(model)
+                                                    .activationFunction(new SigmoidFunction())
+                                                    .done();
 
         int success = 0;
         for (int i = 0; i < input.size(); i++) {

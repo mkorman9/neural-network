@@ -1,7 +1,6 @@
 package com.github.mkorman9.neural.network;
 
 import com.github.mkorman9.neural.activation.Function;
-import com.github.mkorman9.neural.activation.SigmoidFunction;
 import com.github.mkorman9.neural.data.*;
 import com.google.common.base.Preconditions;
 
@@ -13,8 +12,8 @@ public class NeuralNetwork {
     private HiddenLayerNeuronActivationComputer hiddenLayerNeuronActivationComputer;
     private OutputLayerNeuronActivationComputer outputLayerNeuronActivationComputer;
 
-    private NeuralNetwork(Model networkModel) {
-        this.activationFunction = new SigmoidFunction();
+    private NeuralNetwork(Model networkModel, Function activationFunction) {
+        this.activationFunction = activationFunction;
         this.networkModel = networkModel;
         this.learningCyclesCount = 0;
 
@@ -22,10 +21,11 @@ public class NeuralNetwork {
         this.outputLayerNeuronActivationComputer = new OutputLayerNeuronActivationComputer(networkModel, activationFunction);
     }
 
-    private NeuralNetwork(int outputLayerNeurons, int hiddenLayerNeurons, int dimension, int learningCyclesCount) {
-        this.activationFunction = new SigmoidFunction();
-        this.networkModel = new Model(dimension,
-                                        new HiddenLayerModel(hiddenLayerNeurons, dimension),
+    private NeuralNetwork(int outputLayerNeurons, int hiddenLayerNeurons, int inputLayerNeurons,
+                          int learningCyclesCount, Function activationFunction) {
+        this.activationFunction = activationFunction;
+        this.networkModel = new Model(inputLayerNeurons,
+                                        new HiddenLayerModel(hiddenLayerNeurons, inputLayerNeurons),
                                         new OutputLayerModel(outputLayerNeurons, hiddenLayerNeurons));
         this.learningCyclesCount = learningCyclesCount;
 
@@ -64,42 +64,68 @@ public class NeuralNetwork {
         return networkModel;
     }
 
-    public static Builder build() {
-        return new Builder();
+    public static FromPropertiesBuilder buildNew() {
+        return new FromPropertiesBuilder();
     }
 
-    public static NeuralNetwork buildFromModel(Model networkModel) {
-        return new NeuralNetwork(networkModel);
+    public static FromModelBuilder buildFromModel() {
+        return new FromModelBuilder();
     }
 
-    public static class Builder {
-        private int outputLayerNeurons;
-        private int hiddenLayerNeurons;
-        private int dimension;
-        private int learningCyclesCount;
+    public static class FromModelBuilder {
+        private Model model;
+        private Function activationFunction;
 
-        public Builder outputLayerNeurons(int outputLayerNeurons) {
-            this.outputLayerNeurons = outputLayerNeurons;
+        public FromModelBuilder model(Model model) {
+            this.model = model;
             return this;
         }
 
-        public Builder hiddenLayerNeurons(int hiddenLayerNeurons) {
-            this.hiddenLayerNeurons = hiddenLayerNeurons;
-            return this;
-        }
-
-        public Builder dimension(int dimension) {
-            this.dimension = dimension;
-            return this;
-        }
-
-        public Builder learningCyclesCount(int learningCyclesCount) {
-            this.learningCyclesCount = learningCyclesCount;
+        public FromModelBuilder activationFunction(Function activationFunction) {
+            this.activationFunction = activationFunction;
             return this;
         }
 
         public NeuralNetwork done() {
-            return new NeuralNetwork(outputLayerNeurons, hiddenLayerNeurons, dimension, learningCyclesCount);
+            return new NeuralNetwork(model, activationFunction);
+        }
+    }
+
+    public static class FromPropertiesBuilder {
+        private int outputLayerNeurons;
+        private int hiddenLayerNeurons;
+        private int inputLayerNeurons;
+        private int learningCyclesCount;
+        private Function activationFunction;
+
+        public FromPropertiesBuilder outputLayerNeurons(int outputLayerNeurons) {
+            this.outputLayerNeurons = outputLayerNeurons;
+            return this;
+        }
+
+        public FromPropertiesBuilder hiddenLayerNeurons(int hiddenLayerNeurons) {
+            this.hiddenLayerNeurons = hiddenLayerNeurons;
+            return this;
+        }
+
+        public FromPropertiesBuilder inputLayerNeurons(int inputLayerNeurons) {
+            this.inputLayerNeurons = inputLayerNeurons;
+            return this;
+        }
+
+        public FromPropertiesBuilder learningCyclesCount(int learningCyclesCount) {
+            this.learningCyclesCount = learningCyclesCount;
+            return this;
+        }
+
+        public FromPropertiesBuilder activationFunction(Function activationFunction) {
+            this.activationFunction = activationFunction;
+            return this;
+        }
+
+        public NeuralNetwork done() {
+            return new NeuralNetwork(outputLayerNeurons, hiddenLayerNeurons, inputLayerNeurons,
+                    learningCyclesCount, activationFunction);
         }
     }
 }

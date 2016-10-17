@@ -13,6 +13,6 @@ class HiddenLayerBiasComputer {
     }
 
     public Vector compute(Vector hiddenLayerOutputs, Vector dv) {
-        return networkModel.getHiddenLayerModel().getBias();
+        return networkModel.getHiddenLayerModel().getBias(); // TODO
     }
 }

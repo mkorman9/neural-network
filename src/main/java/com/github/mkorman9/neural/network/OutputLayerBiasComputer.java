@@ -13,6 +13,6 @@ class OutputLayerBiasComputer {
     }
 
     public Vector compute(Vector dv) {
-        return networkModel.getOutputLayerModel().getBias();
+        return networkModel.getOutputLayerModel().getBias(); // TODO
     }
 }
