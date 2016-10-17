@@ -15,16 +15,17 @@ public class DefaultReader implements Reader {
     public Model read(File file) {
         Matrix hiddenWeights;
         Vector hiddenBias;
-        Vector outputWeights;
-        double outputBias;
+        Matrix outputWeights;
+        Vector outputBias;
+        int inputsCount = 0;
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-            int dimension = readInt(reader);
-            int neurons = readInt(reader);
-            hiddenWeights = readMatrix(reader, neurons, dimension);
-            hiddenBias = readVector(reader, dimension);
-            outputWeights = readVector(reader, dimension);
-            outputBias = readDouble(reader);
+            inputsCount = readInt(reader);
+            int hiddenNeurons = readInt(reader);
+            hiddenWeights = readMatrix(reader, inputsCount);
+            hiddenBias = readVector(reader);
+            outputWeights = readMatrix(reader, hiddenNeurons);
+            outputBias = readVector(reader);
             reader.close();
         }
         catch (IOException e) {
@@ -32,25 +33,22 @@ public class DefaultReader implements Reader {
         }
 
         return new Model(
+                inputsCount,
                 new HiddenLayerModel(hiddenWeights, hiddenBias),
                 new OutputLayerModel(outputWeights, outputBias)
         );
     }
 
-    private double readDouble(BufferedReader reader) throws IOException {
-        return Double.valueOf(reader.readLine());
-    }
-
-    private Vector readVector(BufferedReader reader, int dimension) throws IOException {
+    private Vector readVector(BufferedReader reader) throws IOException {
         return Vector.create(Lists.newArrayList(reader.readLine().split(DELIMITER)).stream()
                 .map(Double::valueOf)
                 .collect(Collectors.toList()));
     }
 
-    private Matrix readMatrix(BufferedReader reader, int neurons, int dimension) throws IOException {
+    private Matrix readMatrix(BufferedReader reader, int dimension) throws IOException {
         List<Vector> rows = Lists.newArrayList();
         for (int i = 0; i < dimension; i++) {
-            rows.add(readVector(reader, neurons));
+            rows.add(readVector(reader));
         }
         return Matrix.create(rows);
     }

@@ -1,6 +1,5 @@
 package com.github.mkorman9.neural;
 
-import com.github.mkorman9.neural.activation.SigmoidFunction;
 import com.github.mkorman9.neural.data.Matrix;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
@@ -28,9 +27,14 @@ public class SimpleTest {
 
     private static void train(File inputFile, File outputFile) {
         Matrix input = new CsvReader().readFromFile(inputFile);
-        Vector output = new CsvReader().readFromFile(outputFile).column(0);
+        Matrix output = new CsvReader().readFromFile(outputFile);
 
-        NeuralNetwork neuralNetwork = new NeuralNetwork(3, 2, new SigmoidFunction(), 1000);
+        NeuralNetwork neuralNetwork = NeuralNetwork.build()
+                                                .outputLayerNeurons(1)
+                                                .hiddenLayerNeurons(3)
+                                                .dimension(2)
+                                                .learningCyclesCount(1000)
+                                                .done();
         neuralNetwork.learn(input, output);
 
         Writer writer = new DefaultWriter();
@@ -44,12 +48,12 @@ public class SimpleTest {
         Reader reader = new DefaultReader();
         Model model = reader.read(new File("target/simple_model.txt"));
 
-        NeuralNetwork neuralNetwork = new NeuralNetwork(model, new SigmoidFunction());
+        NeuralNetwork neuralNetwork = NeuralNetwork.buildFromModel(model);
 
         int success = 0;
         for (int i = 0; i < input.size(); i++) {
             Vector inputRow = input.row(i);
-            boolean prediction = neuralNetwork.predictTrueFalse(inputRow);
+            boolean prediction = neuralNetwork.predict(inputRow).get(0) > 0.5;
 
             if ((prediction && output.get(i) == 1.0) || (!prediction && output.get(i) == 0.0)) {
                 success += 1;

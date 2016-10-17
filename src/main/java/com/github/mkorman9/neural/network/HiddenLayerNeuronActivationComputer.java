@@ -1,26 +1,24 @@
 package com.github.mkorman9.neural.network;
 
 import com.github.mkorman9.neural.activation.Function;
-import com.github.mkorman9.neural.data.HiddenLayerModel;
 import com.github.mkorman9.neural.data.Matrix;
+import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 
 class HiddenLayerNeuronActivationComputer {
-    private int neurons;
-    private int dimension;
+    private Model networkModel;
     private Function activationFunction;
 
-    public HiddenLayerNeuronActivationComputer(int neurons, int dimension, Function activationFunction) {
-        this.neurons = neurons;
-        this.dimension = dimension;
+    public HiddenLayerNeuronActivationComputer(Model networkModel, Function activationFunction) {
+        this.networkModel = networkModel;
         this.activationFunction = activationFunction;
     }
 
-    public Vector compute(Vector inputRow, HiddenLayerModel hiddenLayerModel) {
-        Vector neuronOutputs = Vector.zero(neurons);
-        for (int i = 0; i < neurons; i++) {
-            double sum = computeWeightSum(inputRow, hiddenLayerModel.getWeights(), i);
-            double activation = activationFunction.compute(sum + hiddenLayerModel.getBias().get(i));
+    public Vector compute(Vector inputRow) {
+        Vector neuronOutputs = Vector.zero(networkModel.getHiddenLayerNeuronsCount());
+        for (int i = 0; i < networkModel.getHiddenLayerNeuronsCount(); i++) {
+            double sum = computeWeightSum(inputRow, networkModel.getHiddenLayerModel().getWeights(), i);
+            double activation = activationFunction.compute(sum + networkModel.getHiddenLayerModel().getBias().get(i));
             neuronOutputs.set(i, activation);
         }
         return neuronOutputs;
@@ -28,7 +26,7 @@ class HiddenLayerNeuronActivationComputer {
 
     private double computeWeightSum(Vector inputRow, Matrix hiddenLayerWeights, int i) {
         double sum = 0;
-        for (int j = 0; j < dimension; j++) {
+        for (int j = 0; j < networkModel.getInputsCount(); j++) {
             sum += inputRow.get(j) * hiddenLayerWeights.value(j, i);
         }
         return sum;
