@@ -14,12 +14,11 @@ class OutputLayerWeightsComputer {
     }
 
     public Matrix compute(Vector hiddenLayerOutput, Vector dv) {
-        Matrix delta = hiddenLayerOutput.multiply(dv);
         Matrix newWeights = Matrix.zero(networkModel.getHiddenLayerNeuronsCount(), networkModel.getOutputLayerNeuronsCount());
         for (int i = 0; i < networkModel.getOutputLayerNeuronsCount(); i++) {
             for (int j = 0; j < networkModel.getHiddenLayerNeuronsCount(); j++) {
-                newWeights.setValue(j, i, networkModel.getOutputLayerModel().getWeights().value(j, i) - (
-                        learningRate * delta.value(j, i)));
+                double delta = hiddenLayerOutput.get(j) * dv.get(i);
+                newWeights.setValue(j, i, networkModel.getOutputLayerModel().getWeights().value(j, i) - (learningRate * delta));
             }
         }
         return newWeights;

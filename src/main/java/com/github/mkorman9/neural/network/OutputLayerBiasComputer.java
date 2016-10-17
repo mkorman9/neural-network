@@ -13,6 +13,10 @@ class OutputLayerBiasComputer {
     }
 
     public Vector compute(Vector dv) {
-        return networkModel.getOutputLayerModel().getBias(); // TODO
+        Vector newBias = Vector.zero(networkModel.getOutputLayerNeuronsCount());
+        for (int i = 0; i < networkModel.getOutputLayerNeuronsCount(); i++) {
+            newBias.set(i, networkModel.getOutputLayerModel().getBias().get(i) - (learningRate * dv.get(i)));
+        }
+        return newBias;
     }
 }

@@ -34,6 +34,6 @@ class Learner {
         networkModel.getOutputLayerModel().setWeights(outputLayerWeightsComputer.compute(hiddenLayerOutputs, dv));
         networkModel.getOutputLayerModel().setBias(outputLayerBiasComputer.compute(dv));
         networkModel.getHiddenLayerModel().setWeights(hiddenLayerWeightsComputer.compute(inputRow, dw));
-        networkModel.getHiddenLayerModel().setBias(hiddenLayerBiasComputer.compute(hiddenLayerOutputs, dv));
+        networkModel.getHiddenLayerModel().setBias(hiddenLayerBiasComputer.compute(dw));
     }
 }
