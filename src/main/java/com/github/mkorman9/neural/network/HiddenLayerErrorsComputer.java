@@ -19,7 +19,7 @@ public class HiddenLayerErrorsComputer {
     public Vector compute(Vector hiddenLayerOutputs, Vector dv) {
         List<Double> vec = Lists.newArrayList();
         for (int i = 0; i < networkModel.getHiddenLayerNeuronsCount(); i++) {
-            vec.add(activationFunction.compute(hiddenLayerOutputs.get(i)) * calculateError(dv, i));
+            vec.add(activationFunction.computeDerivative(hiddenLayerOutputs.get(i)) * calculateError(dv, i));
         }
         return Vector.create(vec);
     }
