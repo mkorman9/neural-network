@@ -15,7 +15,7 @@ class HiddenLayerWeightsComputer {
         Matrix newWeights = Matrix.zero(networkModel.getInputsCount(), networkModel.getHiddenLayerNeuronsCount());
         for (int i = 0; i < networkModel.getHiddenLayerNeuronsCount(); i++) {
             for (int j = 0; j < networkModel.getInputsCount(); j++) {
-                double delta = inputRow.get(j) * dw.get(i);
+                double delta = DeltaNormalizer.normalize(inputRow.get(j) * dw.get(i));
                 newWeights.setValue(j, i, networkModel.getHiddenLayerModel().getWeights().value(j, i) + (delta * learningRate));
             }
         }

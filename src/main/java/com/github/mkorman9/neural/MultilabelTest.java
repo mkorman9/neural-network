@@ -8,12 +8,15 @@ import com.github.mkorman9.neural.data.parser.CsvReader;
 import com.github.mkorman9.neural.network.NeuralNetwork;
 import com.github.mkorman9.neural.network.reader.DefaultReader;
 import com.github.mkorman9.neural.network.reader.Reader;
+import com.github.mkorman9.neural.network.transformer.MulticlassOutputTransformer;
 import com.github.mkorman9.neural.network.writer.DefaultWriter;
 import com.github.mkorman9.neural.network.writer.Writer;
 
 import java.io.File;
 
 public class MultilabelTest {
+    private static MulticlassOutputTransformer multiclassOutputTransformer = new MulticlassOutputTransformer(0.0, 1.0, 2.0);
+
     public static void main(String[] args) {
         File inputFile = new File(args[1]);
         File outputFile = new File(args[2]);
@@ -28,7 +31,7 @@ public class MultilabelTest {
 
     private static void train(File inputFile, File outputFile) {
         Matrix input = new CsvReader().readFromFile(inputFile);
-        Matrix output = new CsvReader().readFromFile(outputFile);
+        Matrix output = multiclassOutputTransformer.transform(new CsvReader().readFromFile(outputFile).column(0));
 
         NeuralNetwork neuralNetwork = NeuralNetwork.buildNew()
                                                     .outputLayerNeurons(3)
@@ -45,7 +48,7 @@ public class MultilabelTest {
 
     private static void predict(File inputFile, File outputFile) {
         Matrix input = new CsvReader().readFromFile(inputFile);
-        Matrix output = new CsvReader().readFromFile(outputFile);
+        Matrix output = multiclassOutputTransformer.transform(new CsvReader().readFromFile(outputFile).column(0));
 
         Reader reader = new DefaultReader();
         Model model = reader.read(new File("target/multilabel_model.txt"));

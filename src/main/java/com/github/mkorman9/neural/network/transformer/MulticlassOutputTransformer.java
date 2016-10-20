@@ -34,6 +34,7 @@ public class MulticlassOutputTransformer {
                     row.set(j, 1.0);
                 }
             }
+            rows.add(row);
         }
         return Matrix.create(rows);
     }

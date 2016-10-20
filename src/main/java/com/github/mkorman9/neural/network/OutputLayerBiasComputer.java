@@ -1,5 +1,6 @@
 package com.github.mkorman9.neural.network;
 
+import com.github.mkorman9.neural.data.DeltaNormalizer;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 
@@ -15,7 +16,8 @@ class OutputLayerBiasComputer {
     public Vector compute(Vector dv) {
         Vector newBias = Vector.zero(networkModel.getOutputLayerNeuronsCount());
         for (int i = 0; i < networkModel.getOutputLayerNeuronsCount(); i++) {
-            newBias.set(i, networkModel.getOutputLayerModel().getBias().get(i) + (learningRate * dv.get(i)));
+            double delta = DeltaNormalizer.normalize(dv.get(i));
+            newBias.set(i, networkModel.getOutputLayerModel().getBias().get(i) + (learningRate * delta));
         }
         return newBias;
     }

@@ -1,5 +1,6 @@
 package com.github.mkorman9.neural.network;
 
+import com.github.mkorman9.neural.data.DeltaNormalizer;
 import com.github.mkorman9.neural.data.Model;
 import com.github.mkorman9.neural.data.Vector;
 
@@ -15,7 +16,8 @@ class HiddenLayerBiasComputer {
     public Vector compute(Vector dw) {
         Vector newBias = Vector.zero(networkModel.getHiddenLayerNeuronsCount());
         for (int i = 0; i < networkModel.getHiddenLayerNeuronsCount(); i++) {
-            newBias.set(i, networkModel.getHiddenLayerModel().getBias().get(i) + (dw.get(i) * learningRate));
+            double delta = DeltaNormalizer.normalize(dw.get(i));
+            newBias.set(i, networkModel.getHiddenLayerModel().getBias().get(i) + (delta * learningRate));
         }
         return newBias;
     }
